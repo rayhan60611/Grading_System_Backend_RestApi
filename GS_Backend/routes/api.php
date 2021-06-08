@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UsersController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,5 +21,6 @@ use App\Http\Controllers\UsersController;
 
 
 
-
-Route::get('user' , [UsersController::class ,'getUser']);
+Route::post('/login' , [UserController::class , 'login']);
+Route::post('/logout' , [UserController::class , 'logout']);
+Route::resource('/users' , UserController::class);
