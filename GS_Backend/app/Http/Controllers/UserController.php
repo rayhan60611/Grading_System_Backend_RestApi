@@ -64,8 +64,9 @@ class UserController extends Controller
     {
         $validator = Validator::make($request->all(),[
 
-            'userid' => 'required|unique:users|numeric',
-            'role' => 'required|numeric', 
+            'user_name' => 'required|unique:users|string',
+            'userid' => 'unique:users|string',
+            'role' => 'required|string', 
             'password' =>'required|min:6'
         ]);
 
@@ -73,12 +74,17 @@ class UserController extends Controller
             return response()->json([
                 'success'=> false,
                 'errors' => $validator->errors()
-                ], 401);
+                ], 422);
         }
 
         try {
-         $user = User::create([
-                'userid' =>$request->userid,
+            $userid = $request->role == 'admin' ? 'A-'.random_int(100000, 999999) : 
+            (($request->role == 'teacher') ? 'T-'.random_int(100000, 999999) : 'P-'.random_int(100000, 999999));
+            $user = User::create([
+                // 'userid' =>$request->userid,
+                // 'userid' =>random_int(100000, 999999), //Auto generated id by the system
+                'userid' => $userid, //Auto generated id by the system
+                'user_name' => $request->user_name,
                 'fname' => $request->fname,
                 'lname' => $request->lname,
                 'role' => $request->role,
@@ -90,7 +96,7 @@ class UserController extends Controller
                 'success'=> true,
                 'message' =>'User Created Successfully!!!',
                 'data' => $user
-                ], 200);
+                ], 201);
            
         } 
         catch (\Throwable $th) {
@@ -119,13 +125,13 @@ class UserController extends Controller
                 'success'=> true,
                 'message' => 'Display the specific User',
                 'data'  => $users
-            ] , 200);
+            ] , 302);
             }
             else{
                 return response()->json([
                     'success'=> false,
                     'message' => 'No User is available At that ID',
-                ] , 400);
+                ] , 404);
             }
         } 
         catch (\Throwable $th) {
@@ -160,6 +166,7 @@ class UserController extends Controller
         $validator = Validator::make($request->all(),[
 
             //'userid' => 'required|unique:users|numeric',
+            'user_name' => 'unique:users|string',
             'role' => 'required|numeric', 
             'password' =>'required|min:6'
         ]);
@@ -168,7 +175,7 @@ class UserController extends Controller
             return response()->json([
                 'success'=> false,
                 'errors' => $validator->errors()
-                ], 401);
+                ], 422);
         }
 
         try {
@@ -177,6 +184,7 @@ class UserController extends Controller
             //$user = User::where('userid', $userid)->get();
             // dd($user);
             // $user->userid = $request->userid;
+            $user->user_name = $request->user_name;
             $user->fname = $request->fname;
             $user->lname = $request->lname;
             $user->role = $request->role;
@@ -256,7 +264,7 @@ class UserController extends Controller
             'access_token' => $token,
             'token_type' => 'bearer',
 
-            'expires_in' => $this->guard()->factory()->getTTL() * 60
+            'expires_in' => $this->guard()->factory()->getTTL() * 60 *24
         ]);
     }
 

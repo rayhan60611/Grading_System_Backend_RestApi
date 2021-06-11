@@ -21,10 +21,11 @@ class UserSeeder extends Seeder
        $facker =  Factory::create();
         foreach (range(1 ,5 ) as $index){
             User::create([
-                'userid'=> $facker->unique()->randomNumber,
+                'userid'=> 'A-'.$facker->unique()->random_int(100000, 999999),
+                'user_name'=> $facker->userName,
                 'fname'=> $facker->firstName,
                 'lname'=> $facker->lastName,
-                'role'=> '1',
+                'role'=> 'admin',
                 'password' => Hash::make('123456')
 
             ]);

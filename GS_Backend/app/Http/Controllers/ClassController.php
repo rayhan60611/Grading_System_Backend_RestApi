@@ -1,22 +1,25 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\MyClass;
+use App\Models\AssignedClassModel;
 
-use App\Models\Subject;
 use Illuminate\Http\Request;
+use PhpParser\Node\Stmt\TryCatch;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Validator;
 
-class SubjectController extends Controller
+
+class ClassController extends Controller
 {
     public function index()
     {
         try {
-            $all_subject_list = Subject::orderBy('id' , 'desc')->get();
+            $all_class_list = MyClass::orderBy('id' , 'desc')->get();
             return response()->json([
                 'success'=> true,
-                'message' => 'Display All The Subject List',
-                'data'  => $all_subject_list
+                'message' => 'Display All The Classes List',
+                'data'  => $all_class_list
 
             ] , 200);
         } 
@@ -33,18 +36,18 @@ class SubjectController extends Controller
     public function show($name)
     {
         try {
-            $subject = Subject::where('name', $name)->get();
-            if(count($subject) > 0){   
+            $class = MyClass::where('name', $name)->get();
+            if(count($class) > 0){   
             return response()->json([
                 'success'=> true,
-                'message' => 'Display the specific Subject by Name',
-                'data'  => $subject
+                'message' => 'Display the specific Class',
+                'data'  => $class
             ] , 302);
             }
             else{
                 return response()->json([
                     'success'=> false,
-                    'message' => 'No subject is available by that Name',
+                    'message' => 'No Class is available by that Name',
                 ] , 404);
             }
         } 
@@ -60,12 +63,9 @@ class SubjectController extends Controller
     {
         $validator = Validator::make($request->all(),[
 
-            // 'subject_class' =>'unique:subjects|string',
-            'name' => 'required|string',
-            'teacher_id' => 'required|numeric', 
-            'status' =>'required|numeric',
-            'class_name' =>'required|string'
-            
+            'name' => 'required|unique:my_classes|string'
+            // 'subject_id' => 'required|numeric', 
+            // 'pupil_id' =>'required|numeric'
         ]);
 
         if($validator->fails()){
@@ -75,33 +75,26 @@ class SubjectController extends Controller
                 ], 422);
         }
 
-        $subject_class = $request->name.'-'.$request->class_name;
-        $db_subject_class = Subject::where('subject_class' , $subject_class)->get();
         try {
-                if(count($db_subject_class) > 0){
+                //send data to class table
+                $classes = new MyClass;
+                $classes->name = $request->name;
+                $classes->save();
 
-                    return response()->json([
-                        'success'=> false,
-                        'message' =>'This Subject Class already taken!!! Try a New One'
-                        ], 422);
-                }
-                else
-                {
-                    $subject = new Subject;
-                    $subject->subject_class = $subject_class;
-                    $subject->name = $request->name;
-                    $subject->teacher_id = $request->teacher_id;
-                    $subject->status = 1;
-                    $subject->class_name = $request->class_name;
-                    $subject->save();
-                return response()->json([
-                    'success'=> true,
-                    'message' =>'Subject Created Successfully!!!',
-                    'data' => $subject,
-                    ], 201);
+                // //send data to AssignedClassModel table
+                // $classid = MyClass::orderBy('id' ,'desc')->where('name' , $request->name)->first();
+                // $assigend_classes = new AssignedClassModel;
+                // $assigend_classes->MyClass_id = $classid->id;
+                // $assigend_classes->subject_id = $request->subject_id;
+                // $assigend_classes->pupil_id = $request->pupil_id;
+                // $assigend_classes->save();
 
-                }
-
+            return response()->json([
+                'success'=> true,
+                'message' =>'Class Created Successfully!!!',
+                'class_data' => $classes,
+                // 'assigend_classes' => $assigend_classes
+                ], 201);
         } 
         catch (\Throwable $th) {
             return response()->json([
@@ -128,7 +121,7 @@ class SubjectController extends Controller
        }
 
        try {
-            $class = Subject::findorfail($id);
+            $class = MyClass::findorfail($id);
             $class->name = $request->name;
             $class->save();
    
@@ -150,7 +143,7 @@ class SubjectController extends Controller
    public function delete($id)
    {   
        try {
-           $class = Subject::where('id', $id)->delete();
+           $class = MyClass::where('id', $id)->delete();
            return response()->json([
                'success'=> true,
                'message' => 'Class Deleted Successfully!',
