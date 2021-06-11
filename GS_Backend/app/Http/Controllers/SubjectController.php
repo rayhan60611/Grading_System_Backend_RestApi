@@ -118,13 +118,9 @@ class SubjectController extends Controller
    public function update(Request $request, $id)
    {
     $validator = Validator::make($request->all(),[
-
-        // 'subject_class' =>'unique:subjects|string',
         'name' => 'string',
         'teacher_id' => 'numeric', 
-        // 'status' =>'required|numeric',
         'class_name' =>'string'
-        
     ]);
 
     if($validator->fails()){
@@ -135,27 +131,32 @@ class SubjectController extends Controller
     }
 
     $subject_class = $request->name.'-'.$request->class_name;
-       try { 
+       try {
            $subject = Subject::where('id',$id)->first();
-           // $specific_subject_data= DB::table('subjects')->select('subject_class')->where('subject_class' , $subject_class)->first();
-           $specific_subject_data= Subject::where('subject_class' , $subject_class)->first();
+           if(!$subject)
+           {
+            return response()->json([
+                'success'=> false,
+                'message' =>'Nothing Found!!!'
+                ], 404);
+           }
+           $subject = Subject::where('id',$id)->first();
+            $specific_subject_data= Subject::where('subject_class' , $subject_class)->first();
             
-         //  dd($specific_subject_data);
             if($specific_subject_data){
+                if($subject->teacher_id === $request->teacher_id){
+                    return response()->json([
+                    'success'=> false,
+                    'message' =>'Nothing To Change!!!'
+                    ], 200);
+                }
                 $subject->teacher_id = $request->teacher_id;
-                $subject->status = 1;
                 $subject->save();
                 return response()->json([
                     'success'=> true,
                     'message' =>'Subject Updated Successfully!!!',
                     'data' => $subject,
-                    ], 204);
-
-                // return response()->json([
-                //     'success'=> false,
-                //     'message' =>'Nothing To Change!!!'
-                //     ], 204);
-          
+                    ], 200);
             }
             else
             {
@@ -170,7 +171,7 @@ class SubjectController extends Controller
                 'success'=> true,
                 'message' =>'Subject Updated Successfully!!!',
                 'data' => $subject,
-                ], 204);
+                ], 200);
 
                 }
         
@@ -188,16 +189,23 @@ class SubjectController extends Controller
    public function delete($id)
    {   
        try {
-           $class = Subject::where('id', $id)->delete();
+            $subject = Subject::where('id', $id)->first();
+           if(!$subject){
+            return response()->json([
+                'success'=> false,
+                'message' =>'Nothing Found!!!'
+                ], 404);
+           }
+           $subject->delete();
            return response()->json([
                'success'=> true,
-               'message' => 'Class Deleted Successfully!',
+               'message' => 'Subject Deleted Successfully!',
            ] , 200);
        } 
        catch (\Throwable $th) {
            return response()->json([
                'success'=> false,
-               'message' => 'Somthing Went Wrong...!!!',
+               'message' => 'Somthing Went Wrong...While deleting the Subject!!!',
            ] , 401);
        }
    }
