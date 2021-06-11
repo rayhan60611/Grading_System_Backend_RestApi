@@ -135,12 +135,15 @@ class SubjectController extends Controller
     }
 
     $subject_class = $request->name.'-'.$request->class_name;
-       try {
-            $subject = Subject::findorfail($id);
-            $specific_subject_data= DB::table('subjects')->select('subject_class' , 'name','teacher_id' ,'status','class_name')->where('id' , $id)->first();
-             //dd($subject_class === $specific_subject_data->subject_class);
-            if($subject_class === $specific_subject_data->subject_class){
+       try { 
+           $subject = Subject::where('id',$id)->first();
+           // $specific_subject_data= DB::table('subjects')->select('subject_class')->where('subject_class' , $subject_class)->first();
+           $specific_subject_data= Subject::where('subject_class' , $subject_class)->first();
+            
+         //  dd($specific_subject_data);
+            if($specific_subject_data){
                 $subject->teacher_id = $request->teacher_id;
+                $subject->status = 1;
                 $subject->save();
                 return response()->json([
                     'success'=> true,
@@ -156,23 +159,12 @@ class SubjectController extends Controller
             }
             else
             {
-                // $db_subject_class= DB::table('subjects')->select('subject_class')->where('subject_class' , $subject_class)->first();
-                $db_subject_class = Subject::where('subject_class' , $subject_class)->get();
-                dd( $db_subject_class);
-                if(count($db_subject_class) > 0){
-
-                    return response()->json([
-                        'success'=> false,
-                        'message' =>'This Subject Class already taken!!! Try a New One'
-                        ], 422);
-                }
-
-                else{
-                    $subject->subject_class = $subject_class;
-                    $subject->name = $request->name;
-                    $subject->teacher_id = $request->teacher_id;
-                    $subject->class_name = $request->class_name;
-                    $subject->save();
+                $subject->subject_class = $subject_class;
+                $subject->name = $request->name;
+                $subject->teacher_id = $request->teacher_id;
+                $subject->status = 1;
+                $subject->class_name = $request->class_name;
+                $subject->save();
 
                 return response()->json([
                 'success'=> true,
@@ -184,8 +176,7 @@ class SubjectController extends Controller
         
 
             }       
-          
-       } 
+    
        catch (\Throwable $th) {
            return response()->json([
                'success'=> false,
