@@ -43,7 +43,7 @@ Route::post('/class/delete/{id}' , [ClassController::class , 'delete']);
 Route::get('/subject/index' , [SubjectController::class , 'index']);
 Route::get('/subject/show/{name}' , [SubjectController::class , 'show']);
 Route::post('/subject/create/store' , [SubjectController::class , 'store']);
-// Route::post('/subject/update/{id}' , [SubjectController::class , 'update']);
+Route::post('/subject/update/{id}' , [SubjectController::class , 'update']);
 // Route::post('/subject/delete/{id}' , [SubjectController::class , 'delete']);
 
 
