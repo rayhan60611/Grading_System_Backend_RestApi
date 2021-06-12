@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\MiscellaneousController;
+use App\Http\Controllers\TestController;
+use App\Http\Controllers\ResultController;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,7 +49,25 @@ Route::post('/subject/update/{id}' , [SubjectController::class , 'update']);
 Route::post('/subject/delete/{id}' , [SubjectController::class , 'delete']);
 
 
+//Test Crontrollers
+Route::get('/test/index' , [TestController::class , 'index']);
+Route::get('/test/show/{name}' , [TestController::class , 'show']);
+Route::post('/test/create/store' , [TestController::class , 'store']);
+Route::post('/test/update/{id}' , [TestController::class , 'update']);
+Route::post('/test/delete/{id}' , [TestController::class , 'delete']);
+
+
+//Result Crontrollers
+Route::get('/result/index' , [ResultController::class , 'index']);
+Route::get('/result/show/{pupil_id}/{id}' , [ResultController::class , 'show']);
+// Route::post('/result/create/store' , [ResultController::class , 'store']);
+// Route::post('/result/update/{id}' , [ResultController::class , 'update']);
+// Route::post('/result/delete/{id}' , [ResultController::class , 'delete']);
+
 
 //Miscellaneous Controllers
 Route::get('/teacher-list' , [MiscellaneousController::class , 'teacherlist']);
 Route::get('/class-list' , [MiscellaneousController::class , 'classlist']);
+Route::get('/teacher/assign/subject/{id}' , [MiscellaneousController::class , 'teacherAssignSubject']);
+Route::get('/test-list' , [MiscellaneousController::class , 'testList']);
+

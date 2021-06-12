@@ -140,7 +140,6 @@ class SubjectController extends Controller
                 'message' =>'Nothing Found!!!'
                 ], 404);
            }
-           $subject = Subject::where('id',$id)->first();
             $specific_subject_data= Subject::where('subject_class' , $subject_class)->first();
             
             if($specific_subject_data){
