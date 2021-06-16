@@ -59,10 +59,12 @@ Route::post('/test/delete/{id}' , [TestController::class , 'delete']);
 
 //Result Crontrollers
 Route::get('/result/index' , [ResultController::class , 'index']);
-Route::get('/result/show/{pupil_id}/{id}' , [ResultController::class , 'show']);
-// Route::post('/result/create/store' , [ResultController::class , 'store']);
-// Route::post('/result/update/{id}' , [ResultController::class , 'update']);
-// Route::post('/result/delete/{id}' , [ResultController::class , 'delete']);
+Route::get('/result/avarage-grade-list' , [ResultController::class , 'avarageGradeList']);
+Route::get('/result/show/{teacher_id}/{pupil_id}/{subject_id}' , [ResultController::class , 'show']);
+Route::post('/result/create/store' , [ResultController::class , 'store']);
+Route::post('/result/update/{id}' , [ResultController::class , 'update']);
+Route::post('/result/delete/{id}' , [ResultController::class , 'delete']);
+Route::post('/result/upload' , [ResultController::class , 'Upload']);
 
 
 //Miscellaneous Controllers
