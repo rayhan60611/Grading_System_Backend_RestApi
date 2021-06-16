@@ -267,6 +267,11 @@ class ResultController extends Controller
 
 
     public function Upload(Request $request){
+
+        $request->validate([
+            'file' => 'required|file|mimes:csv,txt,ods',
+        ]);
+
         try {
       
         if($request->hasFile('file')){
@@ -277,7 +282,6 @@ class ResultController extends Controller
             return response()->json([
                 'success'=> true,
                 'message' =>'CSV/ODS Result Uploded Successfully!!!',
-                // 'data' => $result
                 ], 201);
 
         }
