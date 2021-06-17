@@ -238,7 +238,7 @@ class UserController extends Controller
     public function login(Request $request){
 
         $credentials = $request->only('userid', 'password');
-        $data = User::where('userid',$request->userid)->get();
+        $data = User::where('userid',$request->userid)->where('password',Hash::make($request->password))->get();
 
         if ($token = auth()->attempt($credentials)) {
             return $this->respondWithToken($token , $data);
@@ -272,12 +272,11 @@ class UserController extends Controller
             'data'=> $data,
             'access_token' => $token,
             'token_type' => 'bearer',
-
             'expires_in' => $this->guard()->factory()->getTTL() * 60 *24
         ]);
     }
 
-        /**
+    /**
      * Get the guard to be used during authentication.
      *
      * @return \Illuminate\Contracts\Auth\Guard
