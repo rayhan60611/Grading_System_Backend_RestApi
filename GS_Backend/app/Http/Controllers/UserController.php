@@ -17,7 +17,7 @@ class UserController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login']]);
+        $this->middleware('auth:api')->except(['login','store']);
     }
 
     /**
@@ -246,6 +246,15 @@ class UserController extends Controller
 
         return response()->json(['error' => 'Unauthorized'], 401);
       
+    }
+
+    /**
+     * Refresh a token.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function refresh($data) {
+        return $this->respondWithToken(auth()->refresh(),$data);
     }
 
      /**
