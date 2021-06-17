@@ -8,6 +8,8 @@ use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\MiscellaneousController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\ResultController;
+use App\Http\Controllers\PupilController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -65,6 +67,12 @@ Route::post('/result/create/store' , [ResultController::class , 'store']);
 Route::post('/result/update/{id}' , [ResultController::class , 'update']);
 Route::post('/result/delete/{id}' , [ResultController::class , 'delete']);
 Route::post('/result/upload' , [ResultController::class , 'Upload']);
+
+
+//Pupils Controllers
+
+Route::post('/pupil/avarage-grade/{id}' , [PupilController::class , 'pupilIndividualAvarageGrade']);
+Route::post('/pupil/subject-wise-test-grade/{id}/{subject_id}' , [PupilController::class , 'subjectWiseTestGrade']);
 
 
 //Miscellaneous Controllers

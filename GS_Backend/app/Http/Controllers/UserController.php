@@ -238,7 +238,7 @@ class UserController extends Controller
     public function login(Request $request){
 
         $credentials = $request->only('userid', 'password');
-        $data = User::where('userid',$request->userid)->where('password',Hash::make($request->password))->get();
+        $data = User::where('userid',$request->userid)->get();
 
         if ($token = auth()->attempt($credentials)) {
             return $this->respondWithToken($token , $data);

@@ -298,6 +298,35 @@ class ResultController extends Controller
     }
 
 
+    public function pupilIndividualAvarageGrade()
+    {
+        try {
+            // $pupilIndividualAvarageGrade = Result::orderBy('id' , 'desc')->avg('grade')->groupBy('pupil_id')->with('user')->get();
+    
+            $avarge_grade_by_individual_pupils = DB::table('results')
+            ->join('users', 'users.id', '=', 'results.pupil_id')
+            ->select('users.userid','users.fname','users.lname','users.id', DB::raw('AVG(grade) as AvaregeGrade'))
+            ->groupBy('pupil_id')
+            ->get();
+
+            return response()->json([
+                'success'=> true,
+                'message' => 'Display All The Test Result by Pupils Avarage Grade',
+                'data'  => $avarge_grade_list_by_pupils
+
+            ] , 200);
+        } 
+        catch (\Throwable $th) {
+            return response()->json([
+                'success'=> false,
+                'message' => 'Unauthorized User',
+            ] , 401);
+        }
+       
+    }
+
+
+
 
 }
 

@@ -4,6 +4,8 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class PupilMiddleware
 {
@@ -16,6 +18,10 @@ class PupilMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        return $next($request);
+        $credentials = $request->only('userid', 'password');
+        if(auth()->validate($credentials) and auth()->user()->role === 'pupil'){ 
+            return $next($request);
+        }
+        return dd($credentials);
     }
 }
