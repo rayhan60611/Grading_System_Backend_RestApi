@@ -18,10 +18,15 @@ class PupilMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        $credentials = $request->only('userid', 'password');
-        if(auth()->validate($credentials) and auth()->user()->role === 'pupil'){ 
+        // $credentials = $request->only('userid', 'password');
+        if(auth()->user()->role === 'pupil'){ 
             return $next($request);
         }
-        return dd($credentials);
+        else {
+            return response()->json([
+                'success'=> false,
+                'message' => 'Unauthorized User !! Access Restricted!'
+            ] , 401);
+        }
     }
 }

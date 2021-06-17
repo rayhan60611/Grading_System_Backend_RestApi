@@ -71,8 +71,8 @@ Route::post('/result/upload' , [ResultController::class , 'Upload']);
 
 //Pupils Controllers
 
-Route::post('/pupil/avarage-grade/{id}' , [PupilController::class , 'pupilIndividualAvarageGrade']);
-Route::post('/pupil/subject-wise-test-grade/{id}/{subject_id}' , [PupilController::class , 'subjectWiseTestGrade']);
+Route::get('/pupil/avarage-grade/{id}' , [PupilController::class , 'pupilIndividualAvarageGrade'])->middleware(['auth:api', 'pupil']);
+Route::get('/pupil/subject-wise-test-grade/{id}/{subject_id}' , [PupilController::class , 'subjectWiseTestGrade'])->middleware(['auth:api', 'pupil']);
 
 
 //Miscellaneous Controllers
