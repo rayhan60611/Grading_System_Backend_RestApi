@@ -17,10 +17,10 @@ class UserController extends Controller
      *
      * @return void
      */
-    // public function __construct()
-    // {
-    //     $this->middleware('auth:api')->except(['login','store']);
-    // }
+    public function __construct()
+    {
+        $this->middleware('auth:api')->except(['login','store']);
+    }
 
     /**
      * Display a listing of the resource.
