@@ -9,6 +9,8 @@ use App\Http\Controllers\MiscellaneousController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\ResultController;
 use App\Http\Controllers\PupilController;
+use App\Http\Controllers\AssignedClassController;
+
 
 
 /*
@@ -74,6 +76,13 @@ Route::post('/result/upload' , [ResultController::class , 'Upload']);
 Route::get('/pupil/avarage-grade/{id}' , [PupilController::class , 'pupilIndividualAvarageGrade'])->middleware(['auth:api', 'pupil']);
 Route::get('/pupil/subject-wise-test-grade/{id}/{subject_id}' , [PupilController::class , 'subjectWiseTestGrade'])->middleware(['auth:api', 'pupil']);
 
+
+//AssignedClassController Crontrollers
+Route::get('/AssignedClassController/index' , [AssignedClassController::class , 'index']);
+Route::get('/AssignedClassController/show/{name}' , [AssignedClassController::class , 'show']);
+Route::post('/AssignedClassController/create/store' , [AssignedClassController::class , 'store']);
+Route::post('/AssignedClassController/update/{id}' , [AssignedClassController::class , 'update']);
+Route::post('/AssignedClassController/delete/{id}' , [AssignedClassController::class , 'delete']);
 
 //Miscellaneous Controllers
 Route::get('/teacher-list' , [MiscellaneousController::class , 'teacherlist']);

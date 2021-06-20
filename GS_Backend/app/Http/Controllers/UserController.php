@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Result;
+use App\Models\Subject;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -15,10 +17,10 @@ class UserController extends Controller
      *
      * @return void
      */
-    public function __construct()
-    {
-        $this->middleware('auth:api')->except(['login','store']);
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware('auth:api')->except(['login','store']);
+    // }
 
     /**
      * Display a listing of the resource.
@@ -207,26 +209,105 @@ class UserController extends Controller
         }
     }
 
-    /**
+    // /**
+    //  * Remove the specified resource from storage.
+    //  *
+    //  * @param  int  $id
+    //  * @return \Illuminate\Http\Response
+    //  */
+    // public function destroy($userid)
+    // {   
+    //     try {
+    //         $users = User::where('userid',$userid)->delete();
+    //         return response()->json([
+    //             'success'=> true,
+    //             'message' => 'User Deleted Successfully!',
+
+    //         ] , 200);
+    //     } 
+    //     catch (\Throwable $th) {
+    //         return response()->json([
+    //             'success'=> false,
+    //             'message' => 'Somthing Went Wrong...!!!',
+    //         ] , 401);
+    //     }
+    // }
+
+        /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($userid)
+    public function destroy($id)
     {   
         try {
-            $users = User::where('userid',$userid)->delete();
-            return response()->json([
-                'success'=> true,
-                'message' => 'User Deleted Successfully!',
-
-            ] , 200);
+            $user = User::where('id',$id)->first();
+            //deleting the teacher
+            if($user->role === 'teacher')
+            {
+                $subject_teacher = Subject::where('teacher_id',$id)->get();
+                foreach($subject_teacher as $value){
+                    if(count($subject_teacher) > 0 and $value->status == 1)
+                    {
+                        return response()->json([
+                            'success'=> false,
+                            'message' => 'Teacher cannot be Deleted cause He/She is already assigned to Subject!',
+            
+                       ] , 401);
+                    }
+                    else if(count($subject_teacher) > 0 and $value->status == 0)
+                    {
+                        $user->delete();
+                        return response()->json([
+                            'success'=> true,
+                            'message' => 'Teacher Deleted Successfully!',
+            
+                       ] , 200);
+                    }
+                }
+            }
+          //  deleting the pupil
+            elseif($user->role === 'pupil')
+            {
+                $pupil_result = Result::where('pupil_id',$id)->get();
+                //  dd(count($pupil_result));
+                    if(count($pupil_result) > 0 )
+                    {    foreach ($pupil_result as  $value) 
+                        {
+                         $value->delete();
+                        }
+                        $user->delete();
+                        return response()->json([
+                            'success'=> true,
+                            'message' => 'Pupil And Their All Results Deleted Successfully!',
+            
+                    ] , 200);
+                    }
+                    else{
+                        $user->delete();
+                        return response()->json([
+                            'success'=> true,
+                            'message' => 'Pupil Deleted Successfully!',
+            
+                        ] , 200);
+                    }
+            }
+            else
+            {
+                $user->delete();
+                return response()->json([
+                    'success'=> true,
+                    'message' => 'Admin Deleted Successfully!',
+    
+               ] , 200);
+            }
+            
         } 
         catch (\Throwable $th) {
             return response()->json([
                 'success'=> false,
-                'message' => 'Somthing Went Wrong...!!!',
+                'message' => 'Somthing Went Wrong... while deleting the user!!!',
             ] , 401);
         }
     }
