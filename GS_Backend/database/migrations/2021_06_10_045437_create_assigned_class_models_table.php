@@ -16,7 +16,7 @@ class CreateAssignedClassModelsTable extends Migration
         Schema::create('assigned_class_models', function (Blueprint $table) {
             $table->id();
             $table->integer('MyClass_id');
-            $table->integer('subject_id');
+            // $table->integer('subject_id');
             $table->integer('pupil_id');
             $table->timestamps();
         });

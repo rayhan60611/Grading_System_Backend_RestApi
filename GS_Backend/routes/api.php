@@ -79,10 +79,10 @@ Route::get('/pupil/subject-wise-test-grade/{id}/{subject_id}' , [PupilController
 
 //AssignedClassController Crontrollers
 Route::get('/AssignedClassController/index' , [AssignedClassController::class , 'index']);
-Route::get('/AssignedClassController/show/{name}' , [AssignedClassController::class , 'show']);
+// Route::get('/AssignedClassController/show/{name}' , [AssignedClassController::class , 'show']);
 Route::post('/AssignedClassController/create/store' , [AssignedClassController::class , 'store']);
-Route::post('/AssignedClassController/update/{id}' , [AssignedClassController::class , 'update']);
-Route::post('/AssignedClassController/delete/{id}' , [AssignedClassController::class , 'delete']);
+// Route::post('/AssignedClassController/update/{id}' , [AssignedClassController::class , 'update']);
+// Route::post('/AssignedClassController/delete/{id}' , [AssignedClassController::class , 'delete']);
 
 //Miscellaneous Controllers
 Route::get('/teacher-list' , [MiscellaneousController::class , 'teacherlist']);
