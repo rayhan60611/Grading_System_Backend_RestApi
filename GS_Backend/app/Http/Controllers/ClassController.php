@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 use App\Models\MyClass;
 use App\Models\AssignedClassModel;
-
+use App\Models\Subject;
 use Illuminate\Http\Request;
 use PhpParser\Node\Stmt\TryCatch;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Validator;
-
+use PhpParser\Node\Expr\Assign;
 
 class ClassController extends Controller
 {
@@ -140,20 +140,78 @@ class ClassController extends Controller
        }
    }
 
-   public function delete($id)
-   {   
-       try {
-           $class = MyClass::where('id', $id)->delete();
-           return response()->json([
-               'success'=> true,
-               'message' => 'Class Deleted Successfully!',
-           ] , 200);
-       } 
-       catch (\Throwable $th) {
-           return response()->json([
-               'success'=> false,
-               'message' => 'Somthing Went Wrong...!!!',
-           ] , 401);
-       }
-   }
+//    public function delete($id)
+//    {   
+//        try {
+
+//            $class = MyClass::where('id', $id)->delete();
+//            return response()->json([
+//                'success'=> true,
+//                'message' => 'Class Deleted Successfully!',
+//            ] , 200);
+//        } 
+//        catch (\Throwable $th) {
+//            return response()->json([
+//                'success'=> false,
+//                'message' => 'Somthing Went Wrong...!!!',
+//            ] , 401);
+//        }
+//    }
+// }
+
+
+public function delete($id)
+    {   $classDetails = MyClass::where('id', $id)->first();
+        //    dd(count($classDetails));
+        try {
+            if ($classDetails === null) {
+                return response()->json([
+                    'success'=> false,
+                    'message' => 'Nothing to Delete...!!!'
+                ] , 404);
+            }
+
+            $AssignSubjects = Subject::where('class_name' ,$classDetails->name)->where('status' , 1)->get();
+            // dd($AssignSubjects);
+            $AssignPupils = AssignedClassModel::where('MyClass_id' ,$id)->get();
+            // dd(count($AssignPupils));
+            if(count($AssignSubjects) > 0)
+            {
+                foreach ($AssignSubjects as $AssignSubjects)
+                    {
+                        $AssignSubjects->delete();
+                    }
+
+                if(count($AssignPupils) > 0)
+                {
+                    foreach ($AssignPupils as $AssignPupils)
+                    {
+                        $AssignPupils->delete();
+                    }
+                }
+                $classDetails->delete();
+                return response()->json([
+                    'success'=> true,
+                    'message' => 'Class with its all Subject and Assign pupils are Deleted Successfully!',
+                ] , 200);
+            }
+            else
+            {
+                $classDetails->delete();
+                return response()->json([
+                    'success'=> true,
+                    'message' => 'Class Deleted Successfully!',
+                ] , 200);
+            }
+            
+            
+      
+        } 
+        catch (\Throwable $th) {
+            return response()->json([
+                'success'=> false,
+                'message' => 'Somthing Went Wrong...!!!',
+            ] , 401);
+        }
+    }
 }

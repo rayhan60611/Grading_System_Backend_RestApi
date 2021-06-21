@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Result;
 use App\Models\Test;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -147,7 +148,8 @@ class TestController extends Controller
 
    public function delete($id)
    {   
-       try {
+       try 
+       {
             $test = Test::where('id', $id)->first();
            if(!$test){
             return response()->json([
@@ -155,11 +157,29 @@ class TestController extends Controller
                 'message' =>'Nothing Found!!!'
                 ], 404);
            }
-           $test->delete();
-           return response()->json([
-               'success'=> true,
-               'message' => 'Test Deleted Successfully!',
-           ] , 200);
+           $testdata = Result::where('test_id' ,$id)->get();
+            if (count($testdata) > 0) 
+            {
+                foreach ($testdata as $value) 
+                {
+                    $value->delete();
+                }
+                $test->delete();
+                return response()->json([
+                    'success'=> true,
+                    'message' => 'Test Along with All Results Deleted Successfully!',
+                ] , 200);
+            }
+            else
+            {
+                $test->delete();
+                return response()->json([
+                    'success'=> true,
+                    'message' => 'Test Deleted Successfully!',
+                ] , 200);
+
+            }
+           
        } 
        catch (\Throwable $th) {
            return response()->json([
