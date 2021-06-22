@@ -17,10 +17,10 @@ class UserController extends Controller
      *
      * @return void
      */
-    public function __construct()
-    {
-        $this->middleware('auth:api')->except(['login','store']);
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware('auth:api')->except(['login','store']);
+    // }
 
     /**
      * Display a listing of the resource.
@@ -247,12 +247,13 @@ class UserController extends Controller
             if($user->role === 'teacher')
             {
                 $subject_teacher = Subject::where('teacher_id',$id)->get();
-                foreach($subject_teacher as $value){
+                foreach($subject_teacher as $value)
+                {
                     if(count($subject_teacher) > 0 and $value->status == 1)
                     {
                         return response()->json([
                             'success'=> false,
-                            'message' => 'Teacher cannot be Deleted cause He/She is already assigned to Subject!',
+                            'message' => 'Teacher cannot be Deleted cause He/She is already assigned to Subject!!!'
             
                        ] , 401);
                     }
@@ -266,9 +267,15 @@ class UserController extends Controller
                        ] , 200);
                     }
                 }
+                $user->delete();
+                        return response()->json([
+                            'success'=> true,
+                            'message' => 'Teacher Deleted Successfully!',
+            
+                       ] , 200);
             }
           //  deleting the pupil
-            elseif($user->role === 'pupil')
+            else if($user->role === 'pupil')
             {
                 $pupil_result = Result::where('pupil_id',$id)->get();
                 //  dd(count($pupil_result));
