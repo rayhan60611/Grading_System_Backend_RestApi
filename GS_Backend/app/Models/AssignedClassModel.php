@@ -8,4 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class AssignedClassModel extends Model
 {
     use HasFactory;
+
+    public function User(){
+        return $this->belongsTo(User::class , 'pupil_id' , 'id');
+    }
+
+    public function MyClass(){
+        return $this->belongsTo(MyClass::class , 'MyClass_id' , 'id');
+    }
 }

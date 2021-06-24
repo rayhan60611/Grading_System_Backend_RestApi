@@ -50,6 +50,7 @@ Route::get('/subject/index' , [SubjectController::class , 'index']);
 Route::get('/subject/show/{name}' , [SubjectController::class , 'show']);
 Route::post('/subject/create/store' , [SubjectController::class , 'store']);
 Route::post('/subject/update/{id}' , [SubjectController::class , 'update']);
+Route::post('/subject/archive/{id}' , [SubjectController::class , 'subjectArchive']);
 Route::post('/subject/delete/{id}' , [SubjectController::class , 'delete']);
 
 
@@ -88,5 +89,6 @@ Route::post('/AssignedClassController/create/store' , [AssignedClassController::
 Route::get('/teacher-list' , [MiscellaneousController::class , 'teacherlist']);
 Route::get('/class-list' , [MiscellaneousController::class , 'classlist']);
 Route::get('/teacher/assign/subject/{id}' , [MiscellaneousController::class , 'teacherAssignSubject']);
+Route::get('/teacher/avarage-grade/{teacher_id}/{subject_id}' , [MiscellaneousController::class , 'teacherAvarageGrade']);
 Route::get('/test-list' , [MiscellaneousController::class , 'testList']);
 

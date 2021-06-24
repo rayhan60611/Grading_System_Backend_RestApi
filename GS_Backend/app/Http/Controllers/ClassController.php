@@ -9,17 +9,58 @@ use PhpParser\Node\Stmt\TryCatch;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Validator;
 use PhpParser\Node\Expr\Assign;
+use Illuminate\Support\Facades\DB;
 
 class ClassController extends Controller
 {
+    // public function index()
+    // {
+    //     try {
+    //         $all_class_list = MyClass::orderBy('id' , 'desc')->get();
+    //         return response()->json([
+    //             'success'=> true,
+    //             'message' => 'Display All The Classes List',
+    //             'data'  => $all_class_list
+
+    //         ] , 200);
+    //     } 
+    //     catch (\Throwable $th) {
+    //         return response()->json([
+    //             'success'=> false,
+    //             'message' => 'Unauthorized User',
+    //         ] , 401);
+    //     }
+       
+    // }
+
     public function index()
     {
         try {
-            $all_class_list = MyClass::orderBy('id' , 'desc')->get();
+            // $class_list = DB::table('assigned_class_models')
+            // ->join('users', 'users.id', '=', 'assigned_class_models.pupil_id')
+            // ->join('my_classes', 'my_classes.id', '=', 'assigned_class_models.MyClass_id')
+            // // ->select('users.userid','users.fname','users.lname','users.id as user_id','my_classes.name as class_name','my_classes.id as class_id')
+            // ->select('users.userid','users.fname','users.lname','users.id as user_id','my_classes.name as class_name','my_classes.id as class_id')
+            // ->orderBy('assigned_class_models.MyClass_id')
+            // ->groupBy('assigned_class_models.MyClass_id')
+            // ->get();
+
+             $class_list = DB::table('users')
+            ->join('assigned_class_models',  'users.id' , '=', 'assigned_class_models.pupil_id')
+            // ->join('my_classes', 'my_classes.id', '=', 'assigned_class_models.MyClass_id')
+            ->select('users.fname','users.lname','users.id as user_id','assigned_class_models.MyClass_id','assigned_class_models.pupil_id')
+            ->orderBy('users.fname')
+            ->groupBy('assigned_class_models.MyClass_id')
+            ->get();
+        
+        
+            //   $class_list =AssignedClassModel::With(['User','MyClass'])->groupBy('MyClass_id')->get();
+             
+            
             return response()->json([
                 'success'=> true,
-                'message' => 'Display All The Classes List',
-                'data'  => $all_class_list
+                'message' => 'Display All The Pupil list Group by Class',
+                'data'  => $class_list
 
             ] , 200);
         } 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Subject;
+use App\Models\Test;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Validator;
@@ -13,11 +14,43 @@ class SubjectController extends Controller
     public function index()
     {
         try {
-            $all_subject_list = Subject::orderBy('id' , 'desc')->get();
+            $all_subject_list = Subject::orderBy('id' , 'desc')->with('User')->get();
+            $subject_table_data = DB::table('subjects')
+            ->select('id')
+            ->get();
+            $test_table_data = DB::table('tests')
+            ->select('subject_id')
+            ->get();
+            $s_data_array = [];
+            foreach($subject_table_data as $s_data){
+                $s_data_array[] = $s_data->id;
+            }
+
+            $t_data_array = [];
+            foreach($test_table_data as $t_data){
+                $t_data_array[] = $t_data->subject_id;
+            }
+
+            //  dd($t_data_array);
+            // $Archive_Possible_Data =[];
+            // foreach($subject_test_data as $testData){
+            //     foreach($all_subject_list as $subjectData){
+            //         if($testData->subject_id != $subjectData->id){
+            //             $Archive_Possible_Data[] = $subjectData->id;
+            //         }
+            
+            //     }
+            // }
+            // $Archive_Possible_Data = $subject_table_data->diff($test_table_data);
+            $Archive_Possible_Data =   array_intersect( $s_data_array,$t_data_array);
+            
+
+            
             return response()->json([
                 'success'=> true,
                 'message' => 'Display All The Subject List',
-                'data'  => $all_subject_list
+                'data'  => $all_subject_list,
+                'Archive_Possible_Data' => $Archive_Possible_Data
 
             ] , 200);
         } 
@@ -206,6 +239,62 @@ class SubjectController extends Controller
                'success'=> false,
                'message' => 'Somthing Went Wrong...While deleting the Subject!!!',
            ] , 401);
+       }
+   }
+
+
+   public function subjectArchive(Request $request, $id)
+   {
+    $validator = Validator::make($request->all(),[
+        'status' => 'numeric', 
+    ]);
+
+    if($validator->fails()){
+        return response()->json([
+            'success'=> false,
+            'errors' => $validator->errors()
+            ], 422);
+    }
+
+       try {
+           $subject = Subject::where('id',$id)->first();
+           if(!$subject)
+           {
+            return response()->json([
+                'success'=> false,
+                'message' =>'Nothing Found By that Name!!!'
+                ], 404);
+           }
+             $subject_test_data= Test::where('subject_id' , $id)->get();
+            //   dd(count($subject_test_data));
+            
+            if(count($subject_test_data)){
+                $subject->status = 0 ;
+                $subject->save();
+                return response()->json([
+                    'success'=> true,
+                    'message' =>'Subject Successfully Archived!!!',
+                    'data' => $subject,
+                    ], 200);
+            }
+            else
+            {
+                return response()->json([
+                'success'=> false,
+                'message' =>'Subject Archived is Not Possible!!!',
+                'data' => $subject,
+                ], 401);
+
+                }
+        
+
+            }       
+    
+       catch (\Throwable $th) {
+           return response()->json([
+               'success'=> false,
+               'message' =>'Subject Data Update failed!!!'
+               ], 401);
        }
    }
 }
