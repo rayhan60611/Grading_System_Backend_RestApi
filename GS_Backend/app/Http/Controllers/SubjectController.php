@@ -16,7 +16,7 @@ class SubjectController extends Controller
         try {
             $all_subject_list = Subject::orderBy('id' , 'desc')->with('User')->get();
             $subject_table_data = DB::table('subjects')
-            ->select('id')
+            ->select('id' ,'name')
             ->get();
             $test_table_data = DB::table('tests')
             ->select('subject_id')
@@ -31,17 +31,6 @@ class SubjectController extends Controller
                 $t_data_array[] = $t_data->subject_id;
             }
 
-            //  dd($t_data_array);
-            // $Archive_Possible_Data =[];
-            // foreach($subject_test_data as $testData){
-            //     foreach($all_subject_list as $subjectData){
-            //         if($testData->subject_id != $subjectData->id){
-            //             $Archive_Possible_Data[] = $subjectData->id;
-            //         }
-            
-            //     }
-            // }
-            // $Archive_Possible_Data = $subject_table_data->diff($test_table_data);
             $Archive_Possible_Data =   array_intersect( $s_data_array,$t_data_array);
             
 

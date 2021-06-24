@@ -45,14 +45,14 @@ class ClassController extends Controller
             // ->groupBy('assigned_class_models.MyClass_id')
             // ->get();
 
-             $class_list = DB::table('users')
-            ->join('assigned_class_models',  'users.id' , '=', 'assigned_class_models.pupil_id')
+            //  $class_list = DB::table('my_classes')
+            // ->join('assigned_class_models',  'users.id' , '=', 'assigned_class_models.pupil_id')
             // ->join('my_classes', 'my_classes.id', '=', 'assigned_class_models.MyClass_id')
-            ->select('users.fname','users.lname','users.id as user_id','assigned_class_models.MyClass_id','assigned_class_models.pupil_id')
-            ->orderBy('users.fname')
-            ->groupBy('assigned_class_models.MyClass_id')
-            ->get();
+            // ->select('users.userid','users.fname','users.lname','users.id as user_id','my_classes.name as class_name','my_classes.id as class_id')
+            // ->get();
         
+            $class_list =AssignedClassModel::With(['User','MyClass'])->get();
+           return $class_list2 = $class_list->groupBy('MyClass_id');
         
             //   $class_list =AssignedClassModel::With(['User','MyClass'])->groupBy('MyClass_id')->get();
              
@@ -60,7 +60,7 @@ class ClassController extends Controller
             return response()->json([
                 'success'=> true,
                 'message' => 'Display All The Pupil list Group by Class',
-                'data'  => $class_list
+                'data'  => $class_list2
 
             ] , 200);
         } 
@@ -69,7 +69,7 @@ class ClassController extends Controller
                 'success'=> false,
                 'message' => 'Unauthorized User',
             ] , 401);
-        }
+         }
        
     }
 
