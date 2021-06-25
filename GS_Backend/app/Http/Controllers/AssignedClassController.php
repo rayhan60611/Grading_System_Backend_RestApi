@@ -32,8 +32,8 @@ class AssignedClassController extends Controller
     {
         $validator = Validator::make($request->all(),[
 
-            'MyClass_id' => 'required|numeric',
-            'pupil_id' => 'required|numeric'
+            'MyClass_id' => 'numeric',
+            'pupil_id' => 'numeric'
         ]);
 
         if($validator->fails()){
@@ -46,11 +46,9 @@ class AssignedClassController extends Controller
         try 
         {
                 $AssignedPupilCheckValue = AssignedClassModel::orderBy('id' ,'desc')->where('pupil_id' ,$request->pupil_id)->get();
-            //   dd(count($AssignedPupilCheckValue));
                 if(count($AssignedPupilCheckValue) > 0)
                 {
                     $AssignedClassCheck = AssignedClassModel::where('id' , $AssignedPupilCheckValue[0]->id)->get();
-                    //  dd($AssignedClassCheck[0]->MyClass_id);
                     if($AssignedClassCheck[0]->MyClass_id == $request->MyClass_id )
                     {
                         return response()->json([
