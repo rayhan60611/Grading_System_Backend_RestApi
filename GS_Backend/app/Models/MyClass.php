@@ -9,7 +9,11 @@ class MyClass extends Model
 {
     use HasFactory;
 
-    // public function AssignedClassModel(){
-    //     return $this->belongsToMany(AssignedClassModel::class , 'id' , 'MyClass_id');
-    // }
+    public function assignClass(){
+        return $this->hasMany(AssignedClassModel::class, 'MyClass_id', 'id');
+    }
+
+    public function pupil(){
+        return $this->hasMany(AssignedClassModel::class, 'assignClass.pupil_id', 'id');
+    }
 }

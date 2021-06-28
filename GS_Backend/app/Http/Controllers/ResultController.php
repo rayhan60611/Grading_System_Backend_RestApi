@@ -12,25 +12,29 @@ use App\Imports\ResultImport;
 
 class ResultController extends Controller
 {
-    public function index()
+    public function index($teacherId, $subjectId, $testId)
     {
         try {
-            $result_list = Result::orderBy('id' , 'desc')->with('user')->get();
+            $result_list = Result::orderBy('id', 'desc')->where([
+                ['teacher_id', "=", $teacherId],
+                ['subject_id', "=", $subjectId],
+                ['test_id', "=", $testId],
+            ])->with('user')->get();
             return response()->json([
-                'success'=> true,
+                'success' => true,
                 'message' => 'Display All The Test Result List',
                 'data'  => $result_list
 
-            ] , 200);
-        } 
-        catch (\Throwable $th) {
+            ], 200);
+        } catch (\Throwable $th) {
             return response()->json([
-                'success'=> false,
+                'success' => false,
                 'message' => 'Unauthorized User',
-            ] , 401);
+            ], 401);
         }
-       
+
     }
+    
 
     public function avarageGradeList()
     {
@@ -132,11 +136,11 @@ class ResultController extends Controller
     public function update(Request $request, $id)
    {  
        $validator = Validator::make($request->all(),[ 
-            'test_id' => 'required|numeric', 
-            'teacher_id' => 'required|numeric', 
-            'pupil_id' => 'required|numeric', 
-            'subject_id' => 'required|numeric', 
-            'grade' => 'required|numeric',         
+            // 'test_id' => 'required|numeric', 
+            // 'teacher_id' => 'required|numeric', 
+            // 'pupil_id' => 'required|numeric', 
+            // 'subject_id' => 'required|numeric', 
+            'grade' => 'numeric',         
     ]);
 
     if($validator->fails()){
@@ -155,10 +159,10 @@ class ResultController extends Controller
                 'message' =>'Nothing Found!!!'
                 ], 404);
            }
-                $result->test_id = $request->test_id;
-                $result->teacher_id = $request->teacher_id;
-                $result->pupil_id = $request->pupil_id;
-                $result->subject_id = $request->subject_id;
+                // $result->test_id = $request->test_id;
+                // $result->teacher_id = $request->teacher_id;
+                // $result->pupil_id = $request->pupil_id;
+                // $result->subject_id = $request->subject_id;
                 $result->grade = $request->grade;
                 $result->save();
 
@@ -312,7 +316,7 @@ class ResultController extends Controller
             return response()->json([
                 'success'=> true,
                 'message' => 'Display All The Test Result by Pupils Avarage Grade',
-                'data'  => $avarge_grade_list_by_pupils
+                'data'  => $avarge_grade_by_individual_pupils
 
             ] , 200);
         } 

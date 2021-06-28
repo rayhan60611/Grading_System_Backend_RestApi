@@ -9,24 +9,21 @@ use Illuminate\Support\Facades\Validator;
 
 class TestController extends Controller
 {
-    public function index()
+    public function index($teacherId, $subjectId)
     {
         try {
-            $test_list = Test::orderBy('id' , 'desc')->get();
+            $test_list = Test::where([["teacher_id", "=", $teacherId], ["subject_id", "=", $subjectId]])->orderBy('id', 'desc')->get();
             return response()->json([
-                'success'=> true,
+                'success' => true,
                 'message' => 'Display All The Test List',
                 'data'  => $test_list
-
-            ] , 200);
-        } 
-        catch (\Throwable $th) {
+            ], 200);
+        } catch (\Throwable $th) {
             return response()->json([
-                'success'=> false,
-                'message' => 'Unauthorized User',
-            ] , 401);
+                'success' => false,
+                'message' => 'Failed to load associate subject\'s tests',
+            ], 401);
         }
-       
     }
 
     public function show($name)

@@ -55,7 +55,7 @@ Route::post('/subject/delete/{id}' , [SubjectController::class , 'delete']);
 
 
 //Test Crontrollers
-Route::get('/test/index' , [TestController::class , 'index']);
+Route::get('/test/index/{teacherId}/{subjectId}' , [TestController::class , 'index']);
 Route::get('/test/show/{name}' , [TestController::class , 'show']);
 Route::post('/test/create/store' , [TestController::class , 'store']);
 Route::post('/test/update/{id}' , [TestController::class , 'update']);
@@ -63,7 +63,7 @@ Route::post('/test/delete/{id}' , [TestController::class , 'delete']);
 
 
 //Result Crontrollers
-Route::get('/result/index' , [ResultController::class , 'index']);
+Route::get('/result/index/{teacherId}/{subjectId}/{testId}' , [ResultController::class , 'index']);
 Route::get('/result/avarage-grade-list' , [ResultController::class , 'avarageGradeList']);
 Route::get('/result/show/{teacher_id}/{pupil_id}/{subject_id}' , [ResultController::class , 'show']);
 Route::post('/result/create/store' , [ResultController::class , 'store']);
@@ -91,4 +91,4 @@ Route::get('/class-list' , [MiscellaneousController::class , 'classlist']);
 Route::get('/teacher/assign/subject/{id}' , [MiscellaneousController::class , 'teacherAssignSubject']);
 Route::get('/teacher/avarage-grade/{teacher_id}/{subject_id}' , [MiscellaneousController::class , 'teacherAvarageGrade']);
 Route::get('/test-list' , [MiscellaneousController::class , 'testList']);
-
+Route::get('/teacher/test-pupil-option/{teacherId}/{subjectId}', [MiscellaneousController::class, 'teacherTestPupilOption']);

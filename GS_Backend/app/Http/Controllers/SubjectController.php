@@ -121,7 +121,7 @@ class SubjectController extends Controller
                 return response()->json([
                     'success'=> true,
                     'message' =>'Subject Created Successfully!!!',
-                    'data' => $subject,
+                    'data' => Subject::where('id', "=", $subject->id)->with('User')->first(),
                     ], 201);
 
                 }
@@ -176,7 +176,7 @@ class SubjectController extends Controller
                 return response()->json([
                     'success'=> true,
                     'message' =>'Subject Updated Successfully!!!',
-                    'data' => $subject,
+                    'data' => Subject::where('id', "=", $subject->id)->with('User')->first(),
                     ], 200);
             }
             else
@@ -191,7 +191,7 @@ class SubjectController extends Controller
                 return response()->json([
                 'success'=> true,
                 'message' =>'Subject Updated Successfully!!!',
-                'data' => $subject,
+                'data' => Subject::where('id', "=", $subject->id)->with('User')->first(),
                 ], 200);
 
                 }

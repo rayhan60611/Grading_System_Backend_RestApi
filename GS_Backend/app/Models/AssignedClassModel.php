@@ -9,7 +9,7 @@ class AssignedClassModel extends Model
 {
     use HasFactory;
 
-    public function User(){
+    public function pupil(){
         return $this->belongsTo(User::class , 'pupil_id' , 'id');
     }
 

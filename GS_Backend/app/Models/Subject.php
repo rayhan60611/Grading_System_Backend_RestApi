@@ -12,4 +12,8 @@ class Subject extends Model
     public function User(){
         return $this->belongsTo(User::class ,'teacher_id' ,'id');
     }
+
+    public function classOption() {
+        return $this->belongsTo(MyClass::class, 'class_name', 'name');
+    } 
 }

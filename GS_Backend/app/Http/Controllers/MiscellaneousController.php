@@ -53,7 +53,8 @@ class MiscellaneousController extends Controller
        
     } 
 
-    public function teacherAssignSubject($id){
+    public function teacherAssignSubject($id)
+    {
         try {
             $teacher_assign_subject_list = Subject::orderBy('id' , 'desc')->where('teacher_id' , $id)->get();
             return response()->json([
@@ -118,6 +119,36 @@ class MiscellaneousController extends Controller
             ] , 401);
         }
        
+    }
+
+
+    public function teacherTestPupilOption($teacherId, $subjectId)
+    {
+        try {
+            $list = Subject::where([
+                ["teacher_id", "=", $teacherId],
+                ["id", "=", $subjectId],
+            ])->with("classOption.assignClass.pupil")->first();
+            if ($list && $list->classOption && $list->classOption->assignClass) {
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'All pupils',
+                    'data'  => $list->classOption->assignClass
+                ], 200);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to load pupil or pupil may not be assigned for this subject in the class',
+                ], 400);
+            }
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Something went wrong',
+                "error" => $th
+            ], 500);
+        }
     }
 
 }
