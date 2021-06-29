@@ -16,6 +16,15 @@ class TeacherMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        return $next($request);
+        if(auth()->user()->role === 'teacher'){ 
+            return $next($request);
+        }
+        else {
+            return response()->json([
+                'success'=> false,
+                'message' => 'Unauthorized User !! Access Restricted!'
+            ] , 401);
+        }
+        
     }
 }

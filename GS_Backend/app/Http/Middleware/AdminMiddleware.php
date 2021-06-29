@@ -16,6 +16,14 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        return $next($request);
+        if(auth()->user()->role === 'admin'){ 
+            return $next($request);
+        }
+        else {
+            return response()->json([
+                'success'=> false,
+                'message' => 'Unauthorized User !! Access Restricted!'
+            ] , 401);
+        }
     }
 }
